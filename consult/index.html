@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="format-detection" content="telephone=no">
+    <title>상담 신청 - 법무법인 로앤</title>
+    <script src="../js/config.js"></script>
+    <script src="../js/device-redirect.js"></script>
+    <!-- 웹용 CSS -->
+    <link rel="stylesheet" href="../css/style.css" class="web-css">
+    <!-- 모바일용 CSS -->
+    <link rel="stylesheet" href="../css/m.style.css" class="mobile-css">
+    
+    <script>
+        // 디바이스 체크 및 리디렉션을 위한 코드
+        document.addEventListener('DOMContentLoaded', function() {
+            // 모바일 체크 함수
+            function isMobile() {
+                return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || window.innerWidth <= 768;
+            }
+
+            // 현재 URL 확인 및 리디렉션
+            var currentPath = window.location.pathname;
+            var isMobileBrowser = isMobile();
+            
+            // CSS 파일 조건부 로드
+            var webCss = document.querySelector('.web-css');
+            var mobileCss = document.querySelector('.mobile-css');
+            
+            if (isMobileBrowser) {
+                // 모바일일 경우
+                webCss.disabled = true;
+                mobileCss.disabled = false;
+                
+                // 모바일일 경우 consult 폴더 내의 모바일 버전으로 리다이렉트
+                if (currentPath.indexOf('/consult') !== -1) {
+                    window.location.href = '/revivalevent-test/consult/m.index.html';
+                }
+            } else {
+                // 데스크톱일 경우
+                webCss.disabled = false;
+                mobileCss.disabled = true;
+                
+                // consult 페이지가 별도로 필요한 경우 아래 코드 사용
+                // if (currentPath.indexOf('/m.consult') !== -1) {
+                //     window.location.href = '/revivalevent-test/consult/';
+                // }
+            }
+        });
+    </script>
+</head>
+<body>
+    <main>
+        <div class="container">
+            <h1>1:1 실시간 상담신청</h1>
+            <!-- 여기에 상담 페이지 내용을 추가하세요 -->
+        </div>
+    </main>
+    <footer>
+        <!-- 푸터 내용 -->
+    </footer>
+</body>
+</html>

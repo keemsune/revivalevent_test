@@ -245,61 +245,12 @@
             <div class="section call-section">
                 <span class="title">실시간 상담</span> <span class="phone-number">1800-5495</span>
             </div>
-            <div class="section form-group">
-                <div class="input-group">
-                    <div class="select-box">
-                        <select>
-                            <option value="" disabled selected>거주지역 선택</option>
-                            <option value="서울">서울</option>
-                            <option value="인천">인천</option>
-                            <option value="세종">세종</option>
-                            <option value="대전">대전</option>
-                            <option value="대구">대구</option>
-                            <option value="울산">울산</option>
-                            <option value="광주">광주</option>
-                            <option value="부산">부산</option>
-                            <option value="제주">제주</option>
-                            <option value="강원도">강원도</option>
-                            <option value="경기도">경기도</option>
-                            <option value="충청북도">충청북도</option>
-                            <option value="충청남도">충청남도</option>
-                            <option value="경상북도">경상북도</option>
-                            <option value="경상남도">경상남도</option>
-                            <option value="전라북도">전라북도</option>
-                            <option value="전라남도">전라남도</option>
-                        </select>
-                    </div>
-                    <div class="input-box">
-                        <input type="tel" pattern="[0-9]*" inputmode="numeric" placeholder="연락처 입력 (-없이)" maxlength="11" class="fixed-bar-input">
-                    </div>
-                </div>
-                <div class="consent-group">
-                    <label class="consent-label">
-                        <input type="checkbox" class="consent-checkbox">
-                        <span class="consent-text">정보수집동의</span>
-                    </label>
-                    <button type="button" class="submit-button" onclick="
-                        const fixedBarSelect = document.querySelector('.fixed-bar select');
-                        const fixedBarInput = document.querySelector('.fixed-bar-input');
-                        const fixedBarCheckbox = document.querySelector('.consent-checkbox');
-                        
-                        if(!fixedBarSelect.value && !fixedBarInput.value) {
-                            showAlertModal('입력란을 채워주세요.');
-                        } else if(!fixedBarSelect.value) {
-                            showAlertModal('입력란을 채워주세요.');
-                        } else if(!fixedBarInput.value) {
-                            showAlertModal('입력란을 채워주세요.');
-                        } else if(!fixedBarCheckbox.checked) {
-                            showAlertModal('개인정보 수집 동의에 체크해주세요.');
-                        } else {
-                            showAlertModal('상담신청이 완료되었습니다.');
-                        }
-                    ">상담 신청하기</button>
-                </div>
+            <div class="section button-section">
+                <button type="button" class="submit-button" onclick="window.open('/revivalevent-test/consult', '_blank');">1:1 실시간 상담신청</button>
             </div>
             <div class="section" style="flex: 0;">
-                <button class="kakao-button">
-                    <img src="images/kakao.svg" alt="카카오톡 아이콘" width="20" height="20">
+                <button class="kakao-button" onclick="showKakaoModal()">
+                    <img src="images/kakao.svg" alt="카카오톡 아이콘" width="22" height="22">
                     카카오톡 상담
                 </button>
             </div>
@@ -386,7 +337,7 @@
             border: none;
             border-radius: 5px;
             padding: 12px 24px;
-            font-size: 16px;
+            font-size: 18px;
             font-weight: bold;
             cursor: pointer;
             width: 100%;
@@ -397,12 +348,13 @@
         .kakao-modal {
             display: none;
             position: fixed;
-            z-index: 99999999999;
+            z-index: 999999999;
             left: 0;
             top: 0;
             width: 100%;
             height: 100%;
             pointer-events: auto;
+            overflow: auto;
         }
         
         .kakao-modal-overlay {
@@ -411,13 +363,12 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background-color: rgba(0, 0, 0, 0.3);
-            z-index: 99999999998;
-            pointer-events: auto;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 999999998;
         }
         
         .kakao-modal-content {
-            position: fixed;
+            position: absolute;
             left: 50%;
             top: 50%;
             transform: translate(-50%, -50%);
@@ -426,9 +377,15 @@
             border-radius: 15px;
             width: 90%;
             max-width: 400px;
-            z-index: 99999999999;
-            pointer-events: auto;
+            z-index: 999999999;
             box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            animation: kakaoModalPop 0.3s ease-out;
+        }
+        
+        /* 카카오 모달용 별도 애니메이션 */
+        @keyframes kakaoModalPop {
+            0% { opacity: 0; transform: translate(-50%, -50%) scale(0.8); }
+            100% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
         }
         
         .kakao-modal-header {
@@ -476,7 +433,7 @@
         .kakao-office-btn {
             background-color: #5EB38B;
             border: none;
-            border-radius: 8px;
+            border-radius: 10px;
             padding: 18px;
             font-family: 'Gmarket Sans';
             font-size: 16px;
@@ -505,18 +462,13 @@
             const pastedText = (e.clipboardData || window.clipboardData).getData('text');
             e.target.value = pastedText.replace(/[^0-9]/g, '');
         });
-
-        // 숫자만 입력 가능하도록 제어 - 하단 고정바 연락처 입력란
-        document.querySelector('.fixed-bar-input').addEventListener('input', function(e) {
-            e.target.value = e.target.value.replace(/[^0-9]/g, '');
-        });
-
-        // 붙여넣기할 때도 숫자만 허용 - 하단 고정바 연락처 입력란
-        document.querySelector('.fixed-bar-input').addEventListener('paste', function(e) {
-            e.preventDefault();
-            const pastedText = (e.clipboardData || window.clipboardData).getData('text');
-            e.target.value = pastedText.replace(/[^0-9]/g, '');
-        });
+        
+        // 카카오톡 채팅 열기 함수 (전역)
+        function openKakaoChat() {
+            // 카카오톡 채팅 URL
+            const kakaoUrl = 'https://pf.kakao.com/_Qmxexixl';
+            window.open(kakaoUrl, '_blank');
+        }
         
         // 전역 변수 선언
         let alertModal, alertMessage, alertCloseBtn;
@@ -524,15 +476,17 @@
         
         // 모달 표시 함수 (전역)
         function showAlertModal(message) {
-            if (!alertModal || !alertMessage) {
-                console.error('모달 요소를 찾을 수 없습니다.');
-                alert(message || '입력란을 채워주세요.');
-                return;
+            // 이미 모달이 초기화되어 있는지 확인
+            if (!alertModal) {
+                alertModal = document.getElementById('alert-modal');
+                alertMessage = document.getElementById('alert-message');
+                alertCloseBtn = document.getElementById('alert-close-btn');
             }
             
-            alertMessage.textContent = message || '입력란을 채워주세요.';
+            // 메시지 설정
+            alertMessage.textContent = message;
             
-            // 모달 표시 방식 강화
+            // 모달 표시
             alertModal.style.display = 'flex';
             alertModal.classList.add('show');
             
@@ -554,78 +508,133 @@
         // 모달 닫기 함수 (전역)
         function closeAlertModal() {
             if (!alertModal) {
-                console.error('모달 요소를 찾을 수 없습니다.');
-                return;
+                alertModal = document.getElementById('alert-modal');
             }
             
             alertModal.style.display = 'none';
             alertModal.classList.remove('show');
             
-            // 모바일 환경에서 스크롤 다시 활성화
+            // 스크롤 복원
             document.body.style.overflow = '';
             
             console.log('모달 닫힘');
+            
+            return false;
         }
         
-        // 카카오톡 모달 표시 함수
+        // 카카오톡 모달 표시 함수 - 전역 변수로 수정
         function showKakaoModal() {
-            kakaoModal = document.getElementById('kakao-modal');
-            if (!kakaoModal) return;
+            console.log('showKakaoModal 함수 호출됨');
             
+            // 먼저 모달 요소 초기화
+            kakaoModal = document.getElementById('kakao-modal');
+            
+            if (!kakaoModal) {
+                console.error('카카오톡 모달을 찾을 수 없습니다.');
+                return;
+            }
+            
+            // 모달 콘텐츠 요소가 준비되었는지 확인
+            const modalContent = kakaoModal.querySelector('.kakao-modal-content');
+            if (modalContent) {
+                // 애니메이션이 끝나도 위치가 유지되도록 명시적으로 스타일 설정
+                modalContent.style.opacity = "0";
+                modalContent.style.transform = "translate(-50%, -50%) scale(0.8)";
+            }
+            
+            console.log('카카오 모달 요소 찾음:', kakaoModal);
+            
+            // 모달 표시 설정
             kakaoModal.style.display = 'block';
             document.body.style.overflow = 'hidden';
+            
+            // 레이아웃 계산 강제 실행 후 애니메이션 적용
+            setTimeout(() => {
+                if (modalContent) {
+                    modalContent.style.opacity = "1";
+                    modalContent.style.transform = "translate(-50%, -50%) scale(1)";
+                }
+            }, 10);
+            
+            console.log('카카오 모달 표시 설정 완료');
         }
         
         // 카카오톡 모달 닫기 함수
         function closeKakaoModal() {
-            if (!kakaoModal) return;
+            console.log('closeKakaoModal 함수 호출됨');
+            
+            if (!kakaoModal) {
+                kakaoModal = document.getElementById('kakao-modal');
+            }
+            
+            if (!kakaoModal) {
+                console.error('카카오톡 모달을 찾을 수 없습니다.');
+                return;
+            }
             
             kakaoModal.style.display = 'none';
             document.body.style.overflow = '';
+            
+            console.log('카카오 모달 닫힘');
         }
         
-        // DOM이 로드되면 이벤트 리스너 등록
+        // 페이지 로드 시 실행
         document.addEventListener('DOMContentLoaded', function() {
-            // 알림 모달 관련
+            console.log('DOM 로드됨');
+            
+            // 모달 요소 초기화
             alertModal = document.getElementById('alert-modal');
-            alertCloseBtn = document.getElementById('alert-close-btn');
             alertMessage = document.getElementById('alert-message');
+            alertCloseBtn = document.getElementById('alert-close-btn');
             
             // 카카오톡 모달 관련
             kakaoModal = document.getElementById('kakao-modal');
             const kakaoCloseBtn = document.getElementById('kakao-modal-close');
-            const kakaoButton = document.querySelector('.kakao-button');
             
-            // 카카오톡 버튼 클릭 이벤트
-            if (kakaoButton) {
-                kakaoButton.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    showKakaoModal();
-                });
+            console.log('카카오 모달 요소:', kakaoModal);
+            console.log('카카오 모달 닫기 버튼:', kakaoCloseBtn);
+            
+            // 모달 닫기 이벤트
+            if (alertCloseBtn) {
+                alertCloseBtn.addEventListener('click', closeAlertModal);
             }
             
             // 카카오톡 모달 닫기 버튼 이벤트
             if (kakaoCloseBtn) {
-                kakaoCloseBtn.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    closeKakaoModal();
+                kakaoCloseBtn.addEventListener('click', closeKakaoModal);
+                console.log('카카오 모달 닫기 버튼에 이벤트 리스너 추가됨');
+            }
+            
+            // 모달 외부 클릭시 닫기
+            if (alertModal) {
+                alertModal.addEventListener('click', function(e) {
+                    if (e.target === alertModal) {
+                        closeAlertModal();
+                    }
                 });
             }
             
-            // 모달 외부 클릭 시 닫기
-            window.addEventListener('click', function(event) {
-                if (event.target === alertModal) {
-                    closeAlertModal();
-                }
-                if (event.target.classList.contains('kakao-modal-overlay')) {
+            // 카카오 모달 외부 클릭시 닫기
+            document.addEventListener('click', function(e) {
+                if (e.target.classList.contains('kakao-modal-overlay')) {
                     closeKakaoModal();
+                    console.log('오버레이 클릭으로 카카오 모달 닫힘');
                 }
             });
             
-            // 카카오톡 상담 버튼 클릭 이벤트
-            const kakaoButtons = document.querySelectorAll('.kakao-office-btn');
+            // 카카오톡 버튼 클릭 이벤트 (주석 처리 - 인라인 onclick 이벤트로 대체)
+            /*
+            const kakaoButtons = document.querySelectorAll('.kakao-button');
             kakaoButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    showKakaoModal();
+                });
+            });
+            */
+            
+            // 카카오 오피스 버튼 클릭 이벤트 (모달 내부)
+            const kakaoOfficeButtons = document.querySelectorAll('.kakao-office-btn');
+            kakaoOfficeButtons.forEach(button => {
                 button.addEventListener('click', function() {
                     const url = this.getAttribute('data-url');
                     if (url) {
@@ -635,54 +644,26 @@
                 });
             });
             
-            // 섹션 8 폼 검증
-            const section8Form = document.querySelector('.consultation-form');
-            const section8Select = document.querySelector('.form-select');
-            const section8Input = document.querySelector('.form-input');
-            const section8Checkbox = document.querySelector('.form-checkbox');
-            
-            if (section8Form) {
-                section8Form.addEventListener('submit', function(e) {
-                    e.preventDefault();
-                    
-                    // 폼 검증
-                    if (!section8Select.value || !section8Input.value) {
-                        // 입력란이 비어있을 경우
-                        showAlertModal('입력란을 채워주세요.');
-                    } else if (!section8Checkbox.checked) {
-                        // 정보수집동의가 체크되지 않았을 경우
-                        showAlertModal('정보수집동의에 체크해주세요.');
-                    } else {
-                        // 폼 제출 로직
-                        console.log('섹션 8 폼 제출 성공');
-                    }
-                });
-            }
-            
-            // 하단 고정바 폼 검증
-            const fixedBarSubmitBtn = document.querySelector('.fixed-bar .submit-button');
-            const fixedBarSelect = document.querySelector('.fixed-bar select');
-            const fixedBarInput = document.querySelector('.fixed-bar-input');
-            const fixedBarCheckbox = document.querySelector('.consent-checkbox');
-            
-            if (fixedBarSubmitBtn) {
-                fixedBarSubmitBtn.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    
-                    // 폼 검증
-                    if (!fixedBarSelect.value || !fixedBarInput.value) {
-                        // 입력란이 비어있을 경우
-                        showAlertModal('입력란을 채워주세요.');
-                    } else if (!fixedBarCheckbox.checked) {
-                        // 정보수집동의가 체크되지 않았을 경우
-                        showAlertModal('개인정보 수집 동의에 체크해주세요.');
-                    } else {
-                        // 폼 제출 로직
-                        console.log('하단 고정바 폼 제출 성공');
-                    }
-                });
-            }
+            console.log('모든 이벤트 리스너 등록 완료');
         });
+        
+        // 전역 스코프에서도 초기화 시도
+        window.onload = function() {
+            console.log('window onload');
+            kakaoModal = document.getElementById('kakao-modal');
+            console.log('window.onload에서 카카오 모달 요소:', kakaoModal);
+            
+            // 카카오 버튼에 직접 이벤트 리스너 추가
+            document.querySelector('.kakao-button').onclick = function() {
+                console.log('카카오 버튼 직접 클릭됨');
+                showKakaoModal();
+                return false;
+            };
+        };
+        
+        // 직접 전역 함수로 추가
+        window.showKakaoModal = showKakaoModal;
+        window.closeKakaoModal = closeKakaoModal;
     </script>
 </body>
 </html>

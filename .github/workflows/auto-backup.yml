@@ -15,6 +15,9 @@ on:
 jobs:
   backup:
     runs-on: ubuntu-latest
+    # 워크플로우에 쓰기 권한 부여
+    permissions:
+      contents: write
     
     steps:
       - name: Set up job
@@ -22,6 +25,9 @@ jobs:
       
       - name: Checkout code
         uses: actions/checkout@v3
+        with:
+          # 전체 히스토리 가져오기 (기본값은 1)
+          fetch-depth: 0
       
       - name: Set up Git
         run: |
@@ -32,4 +38,5 @@ jobs:
         run: |
           git add .
           git diff --quiet && git diff --staged --quiet || git commit -m "Auto backup - $(date +'%Y-%m-%d %H:%M:%S')"
-          git push
+          # GitHub 토큰을 사용하여 인증
+          git push https://${{ github.actor }}:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git
